@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import { authMiddleware } from "../middleware";
 import { ZapCreateSchema } from "../types";
 import { prismaClient } from "../db";
-
+import { Prisma } from "@prisma/client";
 
 
 
@@ -22,7 +22,7 @@ router.post("/", authMiddleware, async (req:Request, res:Response) => {
             message: "Incorrect inputs"
         });
     }   
-    const zapId = await prismaClient.$transaction(async tx => {
+    const zapId = await prismaClient.$transaction(async (tx:Prisma.TransactionClient) => {
         const zap = await prismaClient.zap.create({
             data: {
                 userId: parseInt(id),
@@ -62,7 +62,7 @@ router.post("/", authMiddleware, async (req:Request, res:Response) => {
 
 
 
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", authMiddleware, async (req:Request, res:Response) => {
     // @ts-ignore
     const id = req.id;
     const zaps = await prismaClient.zap.findMany({
@@ -90,7 +90,7 @@ router.get("/", authMiddleware, async (req, res) => {
 
 
 
-router.get("/:zapId", authMiddleware, async (req, res) => {
+router.get("/:zapId", authMiddleware, async (req:Request, res:Response) => {
     //@ts-ignore
     const id = req.id;
     const zapId = req.params.zapId;
